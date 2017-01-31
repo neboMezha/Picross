@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>Picture Maker</title>
+	<style type="text/css">
+	
+	</style>
+	<script src="5x5levels.js"></script>
+	<script>
+	var canvas;
+	var board = {};
+	var ctx;
+	//var dim = 40; //15x15
+	//var dim = 60; //10x10
+	var dim = 120; //5x5
+	var allRows = [];
+	var mouse;
+	var bufferSpace;
+	var numV = [];
+	var numH = [];
+	var life;
+	var levelNum=0;
+	
+	
+	window.onload = init;
+	
+		function init(){
+			console.log('init called');
+			canvas = document.querySelector('canvas');
+			ctx = canvas.getContext('2d');
+			
+			board.width = 600;
+			board.height = 600;
+			bufferSpace = canvas.width-board.width;
+			ctx.fillStyle = 'rgb(201,208,157)';
+			ctx.fillRect(0,0,canvas.width,canvas.height);
+			
+			life = board.width/dim;
+			
+			ctx.font="40pt Georgia";
+			ctx.fillStyle = "black";
+			ctx.fillText(life, 50,50);
+			
+			//loadLevel();
+			loadLvl();
+			
+			
+			canvas.onclick = function getMouse(e){
+				mouse= {} // make an object
+				mouse.x = Math.floor((e.pageX - e.target.offsetLeft-bufferSpace)/dim);
+				mouse.y = Math.floor((e.pageY - e.target.offsetTop -bufferSpace)/dim);
+				console.log(mouse.x +" , "+ mouse.y);
+				//return mouse;
+				if(mouse.x>=0 && mouse.y >=0 && life>0)
+					update();
+					
+				if(life<=0){
+					life=5;
+					levelNum++;
+					if(levelNum>4)
+						levelNum =0;
+					console.log(levelNum);
+					
+					numH=[];
+					numV=[];
+					
+					ctx.fillStyle = 'rgb(201,208,157)';
+					ctx.fillRect(0,0,canvas.width,canvas.height);
+					
+					ctx.font="40pt Georgia";
+					ctx.fillStyle = "black";
+					ctx.fillText(life, 50,50);
+					
+					loadLvl();
+					drawBoard();
+				}
+			}
+		drawBoard();
+			
+		};
+		
+		function loadLvl(){
+			switch(levelNum){
+				case 0:
+					lvl0(allRows);
+					break;
+				case 1:
+					lvl1(allRows);
+					break;
+				case 2:
+					lvl2(allRows);
+					break;
+				case 3:
+					lvl3(allRows);
+					break;
+				case 4:
+					lvl4(allRows);
+					break;
+			}
+			//lvl1(allRows);
+			
+			var numTracker= 0;
+			var textContent = "";
+			
+			//CALCULATING HORIZONTAL NUMBERS
+			for(var i=0; i<allRows.length; i++){ //for every row
+				
+				for(var j=0; j<allRows[i].length; j++){ //go through each block in ONE row
+					if(allRows[i][j] == 1){
+						numTracker++;
+						//textContent = numTracker;
+					
+					}
+					if(allRows[i][j] ==0 && allRows[i][j-1] == 1){
+					
+						textContent += numTracker + "  ";
+						numTracker=0;
+					}
+					
+				}
+				if(numTracker>0)
+					textContent += numTracker;
+				numH.push(textContent);
+				//console.log(numTracker);
+				textContent = "";
+				numTracker =0;
+			}
+			
+			//CALCULATING VERTICAL NUMBERS
+			for(var i=0;i<allRows.length; i++){ //can use ROW LENGTH b/c row# == col#
+			
+				for(var j=0; j<allRows.length; j++){ //go through each block in col
+					if(allRows[j][i] == 1){
+						numTracker++;
+						//textContent = numTracker;
+					
+					}
+					if(allRows[j][i] ==0 && allRows[i][j-1] == 1){
+						
+						if(numTracker!=0)
+							textContent += numTracker + "  ";
+						numTracker=0;
+					}
+					
+				}
+				if(numTracker>0)
+					textContent += numTracker;
+				if(textContent == "")
+					textContent = "0";
+				numV.push(textContent);
+				//console.log(numTracker);
+				textContent = "";
+				numTracker =0;
+				
+			}
+			
+		};
+		
+		function drawBoard(){
+			for(var i=0; i<board.height/dim; i++){
+				drawRow(i);
+			}
+			showNumbers();
+		};
+		
+		function drawRow(row){
+			ctx.strokeStyle = "black";
+			
+			for(var i=0; i<board.width/dim;i++){
+				ctx.fillStyle = "white";
+				ctx.fillRect(i*dim+bufferSpace, row*dim+bufferSpace, dim,dim);
+				ctx.strokeRect(i*dim+bufferSpace, row*dim+bufferSpace, dim,dim);
+				//debugger;
+			}
+		};
+		
+		function showNumbers(){
+		
+			ctx.font="20pt Georgia";
+			ctx.fillStyle = "black";
+			for(var i=0; i<numH.length;i++){
+				ctx.fillText(numH[i],bufferSpace/2,i*dim+dim*1.5);
+			}
+			for(var i=0; i<numV.length;i++){
+				ctx.fillText(numV[i],i*dim+dim*1.2,bufferSpace/2);
+			}
+		
+		};
+		
+		function update(){
+			
+		
+			if(allRows[mouse.y][mouse.x] == 1){
+				ctx.fillStyle = "black";
+				ctx.fillRect(mouse.x*dim+bufferSpace, mouse.y*dim+bufferSpace, dim,dim);
+				ctx.strokeRect(mouse.x*dim+bufferSpace, mouse.y*dim+bufferSpace, dim,dim);
+			}
+			else{
+				life--;
+				if(life<1){
+				console.log("DED");
+				}
+			}
+			
+			ctx.fillStyle = 'rgb(201,208,157)';
+			ctx.fillRect(0,0,100,100);
+			ctx.font="40pt Georgia";
+			ctx.fillStyle = "black";
+			ctx.fillText(life, 50,50);
+		}
+		</script>
+</head>
+
+<body>
+	<canvas id="canvas" width="700" height="700"></canvas>
+</body>
+
+</html>
