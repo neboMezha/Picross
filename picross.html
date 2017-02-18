@@ -9,6 +9,7 @@
 	
 	</style>
 	<script src="5x5levels.js"></script>
+	<script src="10x10levels.js"></script>
 	<script>
 	var canvas;
 	var board = {};
@@ -83,23 +84,44 @@
 		};
 		
 		function loadLvl(){
-			switch(levelNum){
-				case 0:
-					lvl0(allRows);
-					break;
-				case 1:
-					lvl1(allRows);
-					break;
-				case 2:
-					lvl2(allRows);
-					break;
-				case 3:
-					lvl3(allRows);
-					break;
-				case 4:
-					lvl4(allRows);
-					break;
-			}
+            if(dim ==120){
+                switch(levelNum){
+			     	case 0:
+			     		lvl0(allRows);
+			     		break;
+			     	case 1:
+			     		lvl1(allRows);
+			     		break;
+			     	case 2:
+			     		lvl2(allRows);
+			     		break;
+			     	case 3:
+			     		lvl3(allRows);
+			     		break;
+			     	case 4:
+			     		lvl4(allRows);
+			     		break;
+			     }
+            }
+            if(dim ==60){
+                switch(levelNum){
+			     	case 0:
+			     		lvl10(allRows);
+			     		break;
+			     	case 1:
+			     		lvl11(allRows);
+			     		break;
+			     	case 2:
+			     		lvl12(allRows);
+			     		break;
+			     	case 3:
+			     		lvl13(allRows);
+			     		break;
+			     	case 4:
+			     		lvl14(allRows);
+			     		break;
+			     }
+            }
 			//lvl1(allRows);
 			
 			var numTracker= 0;
